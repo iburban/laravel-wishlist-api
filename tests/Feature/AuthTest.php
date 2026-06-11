@@ -182,12 +182,6 @@ class AuthTest extends TestCase
             ->assertHeader('Content-Type', 'application/json');
     }
 
-    public function test_unauthenticated_logout_returns_401_json(): void
-    {
-        $response = $this->postJson('/api/logout');
-
-        $response->assertStatus(401)
-            ->assertHeader('Content-Type', 'application/json')
-            ->assertJson(['message' => 'Unauthenticated.']);
-    }
+    // Unauthenticated-access checks for every protected route (logout included) now live in
+    // the consolidated AuthGuardTest.
 }
