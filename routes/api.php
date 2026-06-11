@@ -19,5 +19,5 @@ Route::middleware('auth:sanctum')->group(function (): void {
     // Wishlist: every read/write is scoped to the authenticated user.
     Route::get('/wishlist', [WishlistController::class, 'index']);
     Route::post('/wishlist', [WishlistController::class, 'store']);
-    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy']);
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'destroy'])->whereNumber('product');
 });

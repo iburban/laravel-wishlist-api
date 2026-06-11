@@ -8,7 +8,9 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['user_id', 'product_id'])]
+// Only product_id is mass-assignable; user_id is set server-side via the
+// $user->wishlists()->create(...) relation and is deliberately not fillable.
+#[Fillable(['product_id'])]
 class Wishlist extends Model
 {
     /** @use HasFactory<WishlistFactory> */

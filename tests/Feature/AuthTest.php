@@ -34,7 +34,7 @@ class AuthTest extends TestCase
         $this->assertTrue(Hash::check('password123', $user->password));
     }
 
-    public function test_register_never_exposes_the_password(): void
+    public function test_register_user_payload_omits_password_and_remember_token(): void
     {
         $response = $this->postJson('/api/register', [
             'name' => 'Ada Lovelace',
@@ -44,7 +44,34 @@ class AuthTest extends TestCase
         ]);
 
         $response->assertCreated()
-            ->assertJsonMissingPath('data.user.password');
+            ->assertJsonMissingPath('data.user.password')
+            ->assertJsonMissingPath('data.user.remember_token');
+    }
+
+    public function test_login_user_payload_omits_password_and_remember_token(): void
+    {
+        User::factory()->create([
+            'email' => 'ada@example.com',
+            'password' => 'password123',
+        ]);
+
+        $response = $this->postJson('/api/login', [
+            'email' => 'ada@example.com',
+            'password' => 'password123',
+        ]);
+
+        $response->assertOk()
+            ->assertJsonMissingPath('data.user.password')
+            ->assertJsonMissingPath('data.user.remember_token');
+    }
+
+    public function test_validation_error_envelope_has_message_and_errors_keys(): void
+    {
+        // The 422 envelope must carry both `message` and `errors` so clients can rely on it.
+        $response = $this->postJson('/api/register', []);
+
+        $response->assertStatus(422)
+            ->assertJsonStructure(['message', 'errors']);
     }
 
     /**

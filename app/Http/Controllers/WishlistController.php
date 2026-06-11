@@ -22,7 +22,7 @@ class WishlistController extends Controller
 
     public function store(StoreWishlistRequest $request): JsonResponse
     {
-        $item = $this->wishlist->add($request->user(), $request->integer('product_id'));
+        $item = $this->wishlist->add($request->user(), $request->validated('product_id'));
 
         return (new WishlistResource($item->load('product')))
             ->response()
