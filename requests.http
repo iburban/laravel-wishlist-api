@@ -1,0 +1,95 @@
+### Wishlist API — example requests
+# Works with the VS Code "REST Client" extension and the JetBrains HTTP client.
+# Send the requests top-to-bottom: `login` captures a token that the wishlist
+# requests reuse via {{login.response.body.$.data.token}}.
+#
+# Docker:  http://localhost:8080/api      Local: http://127.0.0.1:8000/api
+
+@baseUrl = http://localhost:8080/api
+@email = ada@example.com
+@password = password123
+
+### Register (public) -> 201, returns a token
+# @name register
+POST {{baseUrl}}/register
+Content-Type: application/json
+Accept: application/json
+
+{
+  "name": "Ada Lovelace",
+  "email": "{{email}}",
+  "password": "{{password}}",
+  "password_confirmation": "{{password}}"
+}
+
+### Login (public) -> 200, returns a token
+# @name login
+POST {{baseUrl}}/login
+Content-Type: application/json
+Accept: application/json
+
+{
+  "email": "{{email}}",
+  "password": "{{password}}"
+}
+
+### Token captured from the login response, reused below.
+@token = {{login.response.body.$.data.token}}
+
+### List products (public, no token) -> 200
+GET {{baseUrl}}/products
+Accept: application/json
+
+### Add a product to my wishlist -> 201
+POST {{baseUrl}}/wishlist
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "product_id": 1
+}
+
+### Get my wishlist -> 200 (only my items, product eager-loaded)
+GET {{baseUrl}}/wishlist
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Add the same product again -> 409 (atomic duplicate prevention)
+POST {{baseUrl}}/wishlist
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "product_id": 1
+}
+
+### Add an invalid product -> 422 (validation: exists:products,id)
+POST {{baseUrl}}/wishlist
+Content-Type: application/json
+Accept: application/json
+Authorization: Bearer {{token}}
+
+{
+  "product_id": 999999
+}
+
+### Remove the product from my wishlist -> 200
+DELETE {{baseUrl}}/wishlist/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Remove it again -> 404 (generic "Resource not found.", no existence leak)
+DELETE {{baseUrl}}/wishlist/1
+Accept: application/json
+Authorization: Bearer {{token}}
+
+### Wishlist without a token -> 401 ("Unauthenticated.")
+GET {{baseUrl}}/wishlist
+Accept: application/json
+
+### Logout -> 200, revokes the current token (reusing it afterwards -> 401)
+POST {{baseUrl}}/logout
+Accept: application/json
+Authorization: Bearer {{token}}
