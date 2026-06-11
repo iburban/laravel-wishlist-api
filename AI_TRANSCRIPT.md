@@ -5,7 +5,7 @@
 │                       ▐▛███▜▌                      │ ─────────────────────── │
 │                      ▝▜█████▛▘                     │ What's new              │
 │                        ▘▘ ▝▝                       │ Sub-agents can now spa… │
-│ Opus 4.8 · Claude Pro · igor@igorsoftware.com's    │ Amazon Bedrock now rea… │
+│ Opus 4.8 · Claude Pro · REDACTED's    │ Amazon Bedrock now rea… │
 │ Organization                                       │ Added a search bar whe… │
 │     /var/www/html/laravel/laravel-wishlist-api     │ /release-notes for more │
 ╰──────────────────────────────────────────────────────────────────────────────╯

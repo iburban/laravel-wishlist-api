@@ -8,6 +8,7 @@ remove products on their own wishlist. Runs on **MySQL** (SQLite in-memory for t
 
 > The full design spec — data model, endpoint contract, error envelope, and test plan — lives in
 > [`implementation_plans/plan.md`](implementation_plans/plan.md). This README is the operator/consumer guide.
+> The full Claude Code build transcript, Phase 1 through final review, is committed at [`AI_TRANSCRIPT.md`](AI_TRANSCRIPT.md).
 
 ## Requirements
 
