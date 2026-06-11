@@ -1,0 +1,45 @@
+services:
+  app:
+    build:
+      context: .
+    image: wishlist-api
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      APP_NAME: "Wishlist API"
+      APP_ENV: local
+      # Throwaway dev key for the container only — not used by any real deployment.
+      APP_KEY: "base64:ewE593gDwsMlD8AApSsT1hF2dj2zRUWc+iZbjbK/YBE="
+      APP_DEBUG: "true"
+      APP_URL: "http://localhost:8080"
+      # Log to stderr so container output is the log — no log file, no perms path.
+      LOG_CHANNEL: stderr
+      DB_CONNECTION: mysql
+      DB_HOST: db
+      DB_PORT: "3306"
+      DB_DATABASE: wishlist
+      DB_USERNAME: wishlist
+      DB_PASSWORD: secret
+    ports:
+      # Host 8080 -> container 8000 (artisan serve). Non-80 to avoid clashing
+      # with a local web server.
+      - "8080:8000"
+
+  db:
+    image: mysql:8.0
+    environment:
+      MYSQL_DATABASE: wishlist
+      MYSQL_USER: wishlist
+      MYSQL_PASSWORD: secret
+      MYSQL_ROOT_PASSWORD: root
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-uroot", "-proot"]
+      interval: 5s
+      timeout: 5s
+      retries: 12
+    volumes:
+      - dbdata:/var/lib/mysql
+
+volumes:
+  dbdata:

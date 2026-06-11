@@ -1,0 +1,22 @@
+# Keep the build context clean and never bake host-only state into the image.
+.git
+.github
+vendor
+node_modules
+
+# Never copy a real .env (local dev secrets); the container is configured
+# entirely via the compose `environment` block. .env.example is harmless to keep.
+.env
+
+# Host-owned runtime artefacts and the local sqlite dev DB.
+storage/logs/*.log
+storage/framework/cache/data/*
+storage/framework/sessions/*
+storage/framework/views/*
+database/database.sqlite
+.phpunit.result.cache
+
+# The docker/build files themselves.
+Dockerfile
+.dockerignore
+docker-compose.yml
